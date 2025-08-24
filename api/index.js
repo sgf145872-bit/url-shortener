@@ -24,12 +24,11 @@ const db = firebase.database();
 // إنشاء رابط قصير
 app.post('/shorten', async (req, res) => {
     const { longUrl } = req.body;
-    console.log('Received longUrl:', longUrl); // تسجيل الرابط المدخل
+    console.log('Received POST request with longUrl:', longUrl);
     if (!longUrl) {
         console.error('Missing longUrl in request');
         return res.status(400).json({ error: 'الرابط الطويل مطلوب' });
     }
-    // التحقق من صحة الرابط
     if (!longUrl.match(/^https?:\/\//)) {
         console.error('Invalid URL:', longUrl);
         return res.status(400).json({ error: 'الرابط غير صالح، يجب أن يبدأ بـ http:// أو https://' });
@@ -54,8 +53,8 @@ app.post('/shorten', async (req, res) => {
 // إعادة توجيه الرابط القصير
 app.get('/:shortCode', async (req, res) => {
     const { shortCode } = req.params;
+    console.log('Received GET request for shortCode:', shortCode);
     try {
-        console.log('Fetching URL for code:', shortCode);
         const snapshot = await db.ref('links/' + shortCode).once('value');
         const url = snapshot.val();
         if (url && url.longUrl) {
@@ -63,11 +62,11 @@ app.get('/:shortCode', async (req, res) => {
             return res.redirect(url.longUrl);
         } else {
             console.error('Short code not found:', shortCode);
-            res.status(404).send('الرابط غير موجود');
+            return res.status(404).json({ error: 'الرابط القصير غير موجود' });
         }
     } catch (err) {
         console.error('Error fetching URL:', err.message);
-        res.status(500).send('خطأ في الخادم: ' + err.message);
+        res.status(500).json({ error: 'خطأ في الخادم: ' + err.message });
     }
 });
 
