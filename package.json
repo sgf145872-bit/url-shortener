@@ -1,0 +1,16 @@
+{
+    "name": "url-shortener",
+    "version": "1.0.0",
+    "description": "موقع لاختصار الروابط باستخدام Firebase وVercel",
+    "main": "api/index.js",
+    "scripts": {
+        "start": "node api/index.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "firebase-admin": "^11.0.0",
+        "shortid": "^2.2.16"
+    },
+    "author": "",
+    "license": "ISC"
+}
