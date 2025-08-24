@@ -16,7 +16,7 @@ try {
     console.log('Firebase initialized successfully');
 } catch (err) {
     console.error('Firebase initialization error:', err.message);
-    throw err; // توقف الخادم إذا فشلت التهيئة
+    throw err;
 }
 
 const db = firebase.database();
@@ -24,6 +24,7 @@ const db = firebase.database();
 // إنشاء رابط قصير
 app.post('/shorten', async (req, res) => {
     const { longUrl } = req.body;
+    console.log('Received longUrl:', longUrl); // تسجيل الرابط المدخل
     if (!longUrl) {
         console.error('Missing longUrl in request');
         return res.status(400).json({ error: 'الرابط الطويل مطلوب' });
@@ -31,7 +32,7 @@ app.post('/shorten', async (req, res) => {
     // التحقق من صحة الرابط
     if (!longUrl.match(/^https?:\/\//)) {
         console.error('Invalid URL:', longUrl);
-        return res.status(400).json({ error: 'الرابط غير صالح' });
+        return res.status(400).json({ error: 'الرابط غير صالح، يجب أن يبدأ بـ http:// أو https://' });
     }
     const shortCode = shortid.generate();
 
